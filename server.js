@@ -1,13 +1,12 @@
 // https://pretty-chat.herokuapp.com/
-// git@heroku.com:pretty-chat.git
+//git@heroku.com:pretty-chat.git
 
 const express = require('express');
-const path = require('path');
 const app = express()
-  .use(express.static( path.join(__dirname, '../static') ))
+  .use(express.static('static'))
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
-  .get('/', (req, res) => {res.sendFile( path.join(__dirname, '/../static/index.html') )});
+  .get('/', (req, res) => {res.sendFile(__dirname + '/static/page.html')});
 
 
 const http = require('http').Server(app);
@@ -15,7 +14,8 @@ const http = require('http').Server(app);
 //const io = require('socket.io').listen(3333).sockets;
 const io = require('socket.io')(http);
 
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 2222;
+//const PORT = 'www.pretty-chat.ru/';
 
 const mysql = require('promise-mysql');
 const mysqlConfig = {
@@ -25,8 +25,6 @@ const mysqlConfig = {
   database: 'pretty_chat',
   port: 3306,
 };
-
-const Base64 = require('js-base64').Base64;
 
 const printTime = require('./print-time.js');
 
@@ -42,27 +40,51 @@ io.on('connection', (socket) => {
   console.log(``);
   console.log(`${printTime()} connected new client ${socket.id}`);
   
-    socket.on('initSignIn', (data) => {
+    socket.on('query', (clientQuery) => {
+      console.log(``);
+      console.log(`${printTime()} query to mysql database: ${clientQuery}`);
+      
       mysql.createConnection(mysqlConfig)
         .then((conn) => {
-          let result = conn.query(`SELECT password FROM users WHERE name="${ Base64.encode(data.name) }";`);
+          let result = conn.query(clientQuery);
           conn.end();
           return result;
         }).then((rows) => {
-          if ((rows[0] === undefined) || (Base64.decode(rows[0].password) !== data.password)) {
+          console.log('');
+          console.log(`${printTime()} result:`);
+          console.log(rows);
+        }).catch((error) => {
+          console.log('');
+          console.log(`${printTime()} error:`);
+          console.log(error);
+          });
+    });
+    
+    
+    socket.on('initSignIn', (data) => {
+      mysql.createConnection(mysqlConfig)
+        .then((conn) => {
+          let result = conn.query(`SELECT password FROM users WHERE name="${ data.name }";`);
+          conn.end();
+          return result;
+        }).then((rows) => {
+          if ((rows[0] === undefined) || (rows[0].password !== data.password)) {
             socket.emit('signInError');
           } else {
             let connection;
             mysql.createConnection(mysqlConfig)
               .then((conn) => {
                 connection = conn;
-                return connection.query(`UPDATE users SET status = 'online' WHERE name="${ Base64.encode(data.name) }";`);
+                return connection.query(`UPDATE users SET status = 'online' WHERE name="${ data.name }";`);
               }).then(() => {
-                let result = connection.query(`SELECT id, name, status FROM users WHERE name="${ Base64.encode(data.name) }"`);
+                let result = connection.query(`SELECT id, name, status FROM users WHERE name="${ data.name }"`);
                 connection.end();
                 return result;
               }).then((rows) => {
-                rows[0].name = Base64.decode(rows[0].name);
+                console.log('');
+                console.log(`${printTime()} signInSuccess:`);
+                console.log(rows[0]);
+                
                 socket.emit('signInSuccess', rows[0]);
                 connectedUsers[rows[0].name] = socket.id;
                 socket.broadcast.emit('user connected', rows[0].name);
@@ -88,7 +110,7 @@ io.on('connection', (socket) => {
     socket.on('initSignUp', (data) => {
       mysql.createConnection(mysqlConfig)
         .then((conn) => {
-          let result = conn.query(`SELECT name FROM users WHERE name="${ Base64.encode(data.name) }";`);
+          let result = conn.query(`SELECT name FROM users WHERE name="${ data.name }";`);
           conn.end();
           return result;
         }).then((rows) => {
@@ -99,16 +121,15 @@ io.on('connection', (socket) => {
             mysql.createConnection(mysqlConfig)
               .then((conn) => {
                 connection = conn;
-                return connection.query(`INSERT INTO users (name, password, status) VALUES ('${ Base64.encode(data.name) }', '${ Base64.encode(data.password) }', 'online');`);
+                return connection.query(`INSERT INTO users (name, password, status) VALUES ('${ data.name }', '${ data.password }', 'online');`);
               }).then(() => {
-                let result = connection.query(`SELECT id, name, status FROM users WHERE name="${ Base64.encode(data.name) }"`);
+                let result = connection.query(`SELECT id, name, status FROM users WHERE name="${ data.name }"`);
                 connection.end();
                 return result;
               }).then((rows) => {
-                rows[0].name = Base64.decode(rows[0].name);
                 socket.emit('signUpSuccess', rows[0]);
                 connectedUsers[rows[0].name] = socket.id;
-                socket.broadcast.emit('user created', rows[0].name);
+                
                 console.log('');
                 console.log(`${printTime()} new user ${rows[0].name} joined`);
               }).catch((error) => {
@@ -134,16 +155,9 @@ io.on('connection', (socket) => {
           conn.end();
           return result;
         }).then((rows) => {
-          for (let row of rows) {
-            row.name = Base64.decode(row.name);
-            row.text = Base64.decode(row.text);
-          };
-          
-          rows.sort((row1, row2) => {
-            if (row1.date > row2.date) return 1;
-            if (row1.date < row2.date) return -1;
-          });
-          
+          console.log('');
+          console.log(`${printTime()} initChat response:`);
+          console.log(rows);
           socket.emit('initChatResponse', rows);
         }).catch((error) => {
           console.log('');
@@ -163,14 +177,15 @@ io.on('connection', (socket) => {
       mysql.createConnection(mysqlConfig)
         .then((conn) => {
           connection = conn;
-          return connection.query(`INSERT INTO messages (date, text, author_id) VALUES (${now},'${Base64.encode(message.text)}', '${message.author_id}');`);
+          return connection.query(`INSERT INTO messages (date, text, author_id) VALUES (${now},'${message.text}', '${message.author_id}');`);
         }).then((rows) => {
-          let result = connection.query(`SELECT *, NULL AS password FROM users, messages WHERE users.id = ${message.author_id} AND messages.room="public" AND messages.date=${now} AND messages.text="${Base64.encode(message.text)}";`);
+          let result = connection.query(`SELECT *, NULL AS password FROM users, messages WHERE users.id = ${message.author_id} AND messages.room="public" AND messages.date=${now} AND messages.text="${message.text}";`);
           connection.end();
           return result;
         }).then((rows) => {
-          rows[0].name = Base64.decode(rows[0].name);
-          rows[0].text = Base64.decode(rows[0].text);
+          console.log('');
+          console.log(`${printTime()} messageFromServer:`);
+          console.log(rows[0]);
           io.emit('messageFromServer', rows[0]);
         }).catch((error) => {
           console.log('');
@@ -180,7 +195,7 @@ io.on('connection', (socket) => {
         });
     });
     
-    socket.on('user leave', (user) => {
+    socket.on('user disconnected', (user) => {
       if (user.name !== 'default') {
         let connection;
         mysql.createConnection(mysqlConfig)

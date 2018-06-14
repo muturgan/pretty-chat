@@ -1,0 +1,39 @@
+﻿SELECT * FROM `users`
+SELECT `name` FROM `users`
+SELECT `name` FROM `users` WHERE `password`="llib"  // [ RowDataPacket { name: 'Bill' } ]
+
+не получать один столбец (установить null)
+SELECT *, NULL AS password FROM users
+
+добавить строку
+INSERT INTO `users` (`name`, `password`) VALUES ('Sofia', 'aifos');
+
+удалить строку
+DELETE FROM `table_name` WHERE `id`='id'
+
+добавить столбец
+ALTER TABLE table_name ADD field_name parameters;
+
+изменить столбец name на name c параметрами
+ALTER TABLE users CHANGE name name VARCHAR(30) NOT NULL UNIQUE
+ALTER TABLE users CHANGE status status VARCHAR(15) NOT NULL DEFAULT 'offline'
+
+изменить значение поля text в строке с id=1 в таблице `news`
+UPDATE `news` SET `text` = 'The very first news' WHERE `id` = 1;
+UPDATE users SET status = 'online' WHERE name="${ data.name }";
+
+создание таблицы:
+CREATE TABLE `messages`
+(
+    `id` INT PRIMARY KEY AUTO_INCREMENT UNIQUE,
+    `date` BIGINT UNSIGNED,
+    `room` VARCHAR(20) DEFAULT "public",
+    `text` TEXT,
+    `author_id` INT REFERENCES `users` (id) ON DELETE NO ACTION
+);
+
+SELECT * FROM messages, users
+WHERE messages.author_id = users.id AND room="public";
+
+очистить таблицу:
+TRUNCATE TABLE messages;

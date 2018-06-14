@@ -1,0 +1,104 @@
+:root {
+  --vue-green: rgb(66,185,131);
+  --vue-dark: rgb(52,73,94);
+  --nuxt-dark: rgb(59,128,112);
+  --nuxt-blue: rgb(82,100,136);
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+	box-sizing: border-box;
+	font-family: Arial, sans-serif;
+  line-height: 1.5;
+  background-color: var(--vue-dark);
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  border: 3px solid yellow;
+}
+
+.js-hidden {
+  display: none;
+}
+
+textarea {
+  width: 500px;
+  height: 75px;
+  box-sizing: border-box;
+}
+
+ul {
+  width: 500px;
+  height: 250px;
+  background-color: white;
+  border: 1px solid black;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+li {
+  list-style-type: none;
+}
+
+.main-fieldset {
+  width: 600px;
+  height: 400px;
+  background-color: var(--vue-green);
+  margin: 30px;
+}
+
+.main-legend {
+  border: 1px solid black;
+  background-color: var(--vue-green);
+  padding: 3px 6px;
+  border-radius: 15px;
+}
+
+.js-warning {
+  border-color: red);
+}
+
+.js-success {
+  border-color: var(--nuxt-blue);
+}
+
+output {
+  margin: 20px;
+  border: 1px solid grey;
+  background-color: lightgrey;
+}
+
+input [type="text"] {
+  margin: 200px;
+}
+
+ul p {
+  color: darkblue;
+}
+
+.online {
+  color: green;
+}
+
+.offline {
+  color: red;
+}
+
+.message-date {
+  color: grey;
+}
+
+.my-message {
+  font-weight: bold;
+}

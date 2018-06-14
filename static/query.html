@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>just form</title>
+  
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <script defer src="js/socket.io.2.1.1.min.js"></script>
+  <script defer src="js/query.js"></script>
+</head>
+
+<body>
+  <section  data-component="chat">
+    <fieldset>
+      <legend>Send mysql query</legend>
+      <ul data-component="message-list"></ul>
+      <textarea data-form="message"></textarea>
+    </fieldset>
+  </section>
+</body>
+</html>

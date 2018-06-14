@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pretty chat</title>
+  
+  <link rel="icon" type="image/png" href="./favicon.png">
+  
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <script defer src="js/socket.io.2.1.1.min.js"></script>
+  <script defer src="js/script.js"></script>
+</head>
+
+<body>
+  <section data-component="greeting-field">
+    <fieldset class="main-fieldset">
+      <legend class="main-legend">Choose your action</legend>
+      Welcome to our pretty chat. Introduce yourself please.
+      <button data-form="choose-sign-up-button">Sign-up</button>
+      <button data-form="choose-sign-in-button">Sign-in</button>
+    </fieldset>
+  </section>
+  
+  <section data-component="sign-up-field" class="js-hidden">
+    <fieldset class="main-fieldset">
+      <legend class="main-legend">Sign-up form</legend>
+      <button data-form="sign-up-back-button"> \u25C0 </button>
+      
+      <fieldset>
+        <legend>Login</legend>
+        <input type="text" data-form="sign-up-login">
+      </fieldset>
+      
+      <fieldset>
+        <legend>Password</legend>
+        <input type="password" data-form="sign-up-password">
+      </fieldset>
+      
+      <fieldset>
+        <legend>Confirm password</legend>
+        <input type="password" data-form="sign-up-confirm-password">
+      </fieldset>
+      
+      <output data-form="sign-up-output">Please create your login and password</output>
+      
+      <button data-form="sign-up-button" disabled>Sign-up</button>
+    </fieldset>
+  </section>
+  
+  <section data-component="sign-in-field" class="js-hidden">
+    <fieldset class="main-fieldset">
+      <legend class="main-legend">Sign-in form</legend>
+      <button data-form="sign-in-back-button"> \u25C0 </button>
+      
+      <fieldset>
+        <legend>Login</legend>
+        <input type="text" data-form="sign-in-login">
+      </fieldset>
+      
+      <fieldset>
+        <legend>Password</legend>
+        <input type="password" data-form="sign-in-password">
+      </fieldset>
+      
+      <output data-form="sign-in-output">Please enter your login and password</output>
+      
+      <button data-form="sign-in-button" disabled>Sign-in</button>
+    </fieldset>
+  </section>
+  
+  <section data-component="chat" class="js-hidden">
+    <fieldset class="main-fieldset">
+      <legend class="main-legend">Pretty chat</legend>
+      
+      <ul data-component="message-list"></ul>
+      
+      <textarea data-form="message"></textarea>
+      <button data-form="send-message-button">Send message</button>
+    </fieldset>
+  </section>
+</body>
+</html>
