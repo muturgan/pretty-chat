@@ -1,0 +1,78 @@
+$vue-green: rgb(66,185,131);
+$vue-dark: rgb(52,73,94);
+
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+	box-sizing: border-box;
+	font-family: Arial, sans-serif;
+  line-height: 1.5;
+  background-color: $vue-dark;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  border: 3px solid yellow;
+}
+
+.item-fieldset {
+  margin: 10px;
+  box-sizing: border-box;
+  width: 580px;
+  height: 65px;
+}
+
+.main-fieldset {
+  width: 600px;
+  height: 550px;
+  background-color: $vue-green;
+  margin: 30px;
+}
+
+.main-legend {
+  border: 1px solid black;
+  background-color: $vue-green;
+  padding: 3px 6px;
+  border-radius: 15px;
+}
+
+.js-warning {
+  color: red;
+}
+
+.js-success {
+  color: darkgreen;
+}
+
+.js-neutral {
+  color: black;
+}
+
+.output-wrapper {
+  margin: 20px 10px 0 10px;
+  padding: 3px 10px;
+  border: 1px solid grey;
+  background-color: white;
+  width: 580px;
+  height: 35px;
+  box-sizing: border-box;
+}
+
+input [type="text"] {
+  margin: 200px;
+}
+
+button {
+  margin: 20px 0 0 10px;
+  width: 150px;
+  height: 25px;
+}
