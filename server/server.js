@@ -137,7 +137,13 @@ io.on('connection', (socket) => {
           for (let row of rows) {
             row.name = Base64.decode(row.name);
             row.text = Base64.decode(row.text);
-          }
+          };
+          
+          rows.sort((row1, row2) => {
+            if (row1.date > row2.date) return 1;
+            if (row1.date < row2.date) return -1;
+          });
+          
           socket.emit('initChatResponse', rows);
         }).catch((error) => {
           console.log('');

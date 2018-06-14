@@ -1,6 +1,6 @@
 {
   "name": "pretty-chat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "my test task for ITTest",
   "scripts": {
     "start": "ng serve",
