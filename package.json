@@ -3,9 +3,10 @@
   "version": "1.0.1",
   "description": "my test task for ITTest",
   "scripts": {
-    "start": "ng serve",
-    "dev": "npx nodemon server.js",
-    "build": "ng build"
+    "build": "ng build --prod",
+    "devBack": "npx nodemon server/server.js",
+    "devFront": "ng build --watch",
+    "start": "node server/server.js"
   },
   "author": "Sakharov Andrey",
   "license": "ISC",
