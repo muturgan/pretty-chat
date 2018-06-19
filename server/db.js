@@ -15,7 +15,7 @@ const sqlRequest = (req) => {
       connection.end();
       return rows;
     }).catch((error) => {
-      throw new Error(error); //return error;
+      throw error; //return error;
     });
 };
 
