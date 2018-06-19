@@ -1,5 +1,4 @@
 const sqlRequest = require('./db.js');
-
 const Base64 = require('js-base64').Base64;
 
 const controller = {
@@ -7,7 +6,7 @@ const controller = {
     return sqlRequest(`SELECT password FROM users WHERE name="${ Base64.encode(data.name) }";`)
       .then((rows) => {
         if ((rows[0] === undefined) || (Base64.decode(rows[0].password) !== data.password)) {
-          return 'signInError'; //return new Error('signInError');
+          throw new Error('signInError');
         } else {
           return sqlRequest(`UPDATE users SET status = 'online' WHERE name="${ Base64.encode(data.name) }";`)
           .then(() => {
@@ -18,7 +17,7 @@ const controller = {
           });
         }
       }).catch((error) => {
-        throw new Error(error); //return error;
+        throw error;
       });
   },
   
@@ -26,7 +25,7 @@ const controller = {
     return sqlRequest(`SELECT name FROM users WHERE name="${ Base64.encode(data.name) }";`)
       .then((rows) => {
         if (rows[0]) {
-          return 'signUpError'; //return new Error('signUpError');
+          throw new Error('signUpError');
         } else {
           return sqlRequest(`INSERT INTO users (name, password, status) VALUES ('${ Base64.encode(data.name) }', '${ Base64.encode(data.password) }', 'online');`)
           .then(() => {
@@ -36,7 +35,7 @@ const controller = {
           });
         }
       }).catch((error) => {
-        throw new Error(error); //return error;
+        throw error;
       });
   },
   
@@ -55,7 +54,7 @@ const controller = {
       
       return rows;
     }).catch((error) => {
-        throw new Error(error); //return error;
+        throw error;
     });
   },
   
@@ -70,14 +69,14 @@ const controller = {
       rows[0].text = Base64.decode(rows[0].text);
       return rows[0];
     }).catch((error) => {
-      throw new Error(error); //return error;
+      throw error;
     }); 
   },
   
   userLeave: (user) => {
     return sqlRequest(`UPDATE users SET status = 'offline' WHERE id="${ user.id }";`)
     .catch((error) => {
-      throw new Error(error); //return error;
+      throw error;
     });
   },
 };

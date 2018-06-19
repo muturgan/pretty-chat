@@ -19,7 +19,6 @@ http.listen(PORT, () => {
 ${printTime()} server listening on ${ PORT }`);
 });
 
-
 const connectedUsers = {};
 
 io.on('connection', (socket) => {
@@ -30,21 +29,21 @@ io.on('connection', (socket) => {
     socket.on('initSignIn', (data) => {
       controller.initSignIn(data)
         .then((result) => {
-          if (result === 'signInError') {
+          socket.emit('signInSuccess', result);
+          connectedUsers[result.name] = socket.id;
+          socket.broadcast.emit('user connected', result.name);
+          
+          console.log('');
+          console.log(`${printTime()} ${result.name} is online`);   
+        }).catch((error) => {
+          if (error.message === 'signInError') {
             socket.emit('signInError');
           } else {
-            socket.emit('signInSuccess', result);
-            connectedUsers[result.name] = socket.id;
-            socket.broadcast.emit('user connected', result.name);
-            
             console.log('');
-            console.log(`${printTime()} ${result.name} is online`);
+            console.log(`${printTime()} error:`);
+            console.log(error);
+            socket.emit('serverError');
           }
-        }).catch((error) => {
-          console.log('');
-          console.log(`${printTime()} error:`);
-          console.log(error);
-          socket.emit('serverError');
         });
     });
     
@@ -52,21 +51,21 @@ io.on('connection', (socket) => {
     socket.on('initSignUp', (data) => {
       controller.initSignUp(data)
         .then((result) => {
-          if (result === 'signUpError') {
+          socket.emit('signUpSuccess', result);
+          connectedUsers[result.name] = socket.id;
+          socket.broadcast.emit('user created', result.name);
+          
+          console.log('');
+          console.log(`${printTime()} new user ${result.name} joined`);
+        }).catch((error) => {
+          if (error.message === 'signUpError') {
             socket.emit('signUpError');
           } else {
-            socket.emit('signUpSuccess', result);
-            connectedUsers[result.name] = socket.id;
-            socket.broadcast.emit('user created', result.name);
-            
             console.log('');
-            console.log(`${printTime()} new user ${result.name} joined`);
+            console.log(`${printTime()} error:`);
+            console.log(error);
+            socket.emit('serverError');
           }
-        }).catch((error) => {
-          console.log('');
-          console.log(`${printTime()} error:`);
-          console.log(error);
-          socket.emit('serverError');
         });
     });
     
