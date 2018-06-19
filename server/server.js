@@ -19,7 +19,6 @@ http.listen(PORT, () => {
 ${printTime()} server listening on ${ PORT }`);
 });
 
-
 const connectedUsers = {};
 
 io.on('connection', (socket) => {

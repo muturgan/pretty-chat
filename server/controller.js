@@ -1,5 +1,4 @@
 const sqlRequest = require('./db.js');
-
 const Base64 = require('js-base64').Base64;
 
 const controller = {
