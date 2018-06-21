@@ -30,7 +30,7 @@ import { SocketService } from '../socket.service';
         
         <textarea
           #textarea
-          (keydown)="checkKey($event.keyCode, sendMessageButton)"
+          (keydown)="checkKey($event, sendMessageButton)"
           tabindex="1"
           autofocus
         ></textarea>
@@ -118,8 +118,8 @@ export class AppChatComponent implements OnInit {
     this.ul = document.body.querySelector('#messagesList');
   }
   
-  public checkKey(keyCode:number, sendMessageButton) {
-    if (keyCode === 13) { //Enter
+  public checkKey(event, sendMessageButton) {
+    if ((event.keyCode === 13) && (!event.shiftKey)) {
       sendMessageButton.dispatchEvent(this.click);
     }
   }
