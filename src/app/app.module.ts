@@ -24,6 +24,7 @@ import { DateService } from './chat/message/date.service';
     BrowserModule,
     AppRoutingModule,
   ],
+  providers: [SocketService, DateService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

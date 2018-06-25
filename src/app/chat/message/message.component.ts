@@ -5,7 +5,7 @@ import { DateService } from './date.service';
   selector: 'app-message',
   template: `
     <li>
-      <span class="message-date"> {{ _dateService.prettierDate(message?.date) }}</span>
+      <span class="message-date"> {{ dateService.prettierDate(message?.date) }}</span>
       <b [class]="message?.status"> • </b>
       <span [class]="messageAuthorship"> {{ message?.name }} </span>
       <p> {{ message?.text }} </p>
@@ -22,7 +22,7 @@ export class AppMessageComponent implements OnInit  {
   
   public messageAuthorship:string = '';
   
-  constructor(public _dateService: DateService) {}
+  constructor(public dateService: DateService) {}
   
   
   ngOnInit(): void {
