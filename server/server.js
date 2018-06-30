@@ -11,8 +11,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const PORT = process.env.PORT || 3333;
 
-const controller = require('./controller.js');
-const printTime = require('./print-time.js');
+const controller = require('./src/controller.js');
+const printTime = require('./src/print-time.js');
 
 http.listen(PORT, () => {
   console.log(`
