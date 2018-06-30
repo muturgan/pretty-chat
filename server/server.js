@@ -1,1 +1,117 @@
-!function(e){var n={};function o(t){if(n[t])return n[t].exports;var r=n[t]={i:t,l:!1,exports:{}};return e[t].call(r.exports,r,r.exports,o),r.l=!0,r.exports}o.m=e,o.c=n,o.d=function(e,n,t){o.o(e,n)||Object.defineProperty(e,n,{enumerable:!0,get:t})},o.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},o.t=function(e,n){if(1&n&&(e=o(e)),8&n)return e;if(4&n&&"object"==typeof e&&e&&e.__esModule)return e;var t=Object.create(null);if(o.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:e}),2&n&&"string"!=typeof e)for(var r in e)o.d(t,r,function(n){return e[n]}.bind(null,r));return t},o.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return o.d(n,"a",n),n},o.o=function(e,n){return Object.prototype.hasOwnProperty.call(e,n)},o.p="",o(o.s=9)}([function(e,n){e.exports=(()=>{let e=new Date,n=`[${e.getHours()}:${e.getMinutes()}:${e.getSeconds()}]`;return":"===n[2]&&(n="[0"+n.substring(1)),":"===n[5]&&(n=n.substring(0,4)+"0"+n.substring(4)),"]"===n[8]&&(n=n.substring(0,7)+"0"+n.substring(7)),n})},function(e,n){e.exports=require("js-base64")},function(e,n){e.exports=require("promise-mysql")},function(e,n,o){const t=o(2),r={host:"128.199.39.117",user:"node",password:"edon",database:"pretty_chat",port:3306};e.exports=(e=>t.createConnection(r).then(n=>{let o=n.query(e);return n.end(),o}).catch(e=>{throw e}))},function(e,n,o){const t=o(3),r=o(1).Base64,s={initSignIn:e=>t(`SELECT password FROM users WHERE name="${r.encode(e.name)}";`).then(n=>{if(void 0===n[0]||r.decode(n[0].password)!==e.password)throw new Error("signInError");return t(`UPDATE users SET status = 'online' WHERE name="${r.encode(e.name)}";`).then(()=>t(`SELECT id, name, status FROM users WHERE name="${r.encode(e.name)}"`)).then(e=>(e[0].name=r.decode(e[0].name),e[0]))}).catch(e=>{throw e}),initSignUp:e=>t(`SELECT name FROM users WHERE name="${r.encode(e.name)}";`).then(n=>{if(n[0])throw new Error("signUpError");return t(`INSERT INTO users (name, password, status) VALUES ('${r.encode(e.name)}', '${r.encode(e.password)}', 'online');`).then(()=>t(`SELECT id, name, status FROM users WHERE name="${r.encode(e.name)}"`)).then(e=>e[0])}).catch(e=>{throw e}),initChat:()=>t('SELECT *, NULL AS password FROM users, messages WHERE messages.author_id = users.id AND messages.room="public";').then(e=>{for(let n of e)n.name=r.decode(n.name),n.text=r.decode(n.text);return e.sort((e,n)=>e.date>n.date?1:e.date<n.date?-1:void 0),e}).catch(e=>{throw e}),messageFromClient:e=>{const n=Date.now();return t(`INSERT INTO messages (date, text, author_id) VALUES (${n},'${r.encode(e.text)}', '${e.author_id}');`).then(o=>t(`SELECT *, NULL AS password FROM users, messages WHERE users.id = ${e.author_id} AND messages.room="public" AND messages.date=${n} AND messages.text="${r.encode(e.text)}";`)).then(e=>(e[0].name=r.decode(e[0].name),e[0].text=r.decode(e[0].text),e[0])).catch(e=>{throw e})},userLeave:e=>t(`UPDATE users SET status = 'offline' WHERE id="${e.id}";`).catch(e=>{throw e})};e.exports=s},function(e,n){e.exports=require("socket.io")},function(e,n){e.exports=require("http")},function(e,n){e.exports=require("path")},function(e,n){e.exports=require("express")},function(e,n,o){(function(e){const n=o(8),t=o(7),r=n().use(n.static(t.join(e,"../static"))).use(n.json()).use(n.urlencoded({extended:!0})).get("/",(n,o)=>{o.sendFile(t.join(e,"/../static/index.html"))}),s=o(6).Server(r),i=o(5)(s),a=process.env.PORT||3333,c=o(4),u=o(0);s.listen(a,()=>{console.log(`\n${u()} server listening on ${a}`)});const l={};i.on("connection",e=>{console.log(""),console.log(`${u()} connected new client ${e.id}`),e.on("initSignIn",n=>{c.initSignIn(n).then(n=>{e.emit("signInSuccess",n),l[n.name]=e.id,e.broadcast.emit("user connected",n.name),console.log(""),console.log(`${u()} ${n.name} is online`)}).catch(n=>{"signInError"===n.message?e.emit("signInError"):(console.log(""),console.log(`${u()} error:`),console.log(n),e.emit("serverError"))})}),e.on("initSignUp",n=>{c.initSignUp(n).then(n=>{e.emit("signUpSuccess",n),l[n.name]=e.id,e.broadcast.emit("user created",n.name),console.log(""),console.log(`${u()} new user ${n.name} joined`)}).catch(n=>{"signUpError"===n.message?e.emit("signUpError"):(console.log(""),console.log(`${u()} error:`),console.log(n),e.emit("serverError"))})}),e.on("initChat",()=>{c.initChat().then(n=>{e.emit("initChatResponse",n)}).catch(n=>{console.log(""),console.log(`${u()} error:`),console.log(n),e.emit("serverError")})}),e.on("messageFromClient",n=>{c.messageFromClient(n).then(e=>{i.emit("messageFromServer",e)}).catch(n=>{console.log(""),console.log(`${u()} error:`),console.log(n),e.emit("serverError")})}),e.on("user leave",e=>{"default"!==e.name&&c.userLeave(e).then(()=>{console.log(""),console.log(`${u()} ${e.name} is offline`),delete l[e.name],i.emit("user leave",e.name)}).catch(e=>{console.log(""),console.log(`${u()} error:`),console.log(e)})})})}).call(this,"/")}]);
+const express = require('express');
+const path = require('path');
+const app = express()
+  .use(express.static( path.join(__dirname, '../static') ))
+  .use(express.json())
+  .use(express.urlencoded({ extended: true }))
+  .get('/', (req, res) => {res.sendFile( path.join(__dirname, '/../static/index.html') )});
+
+
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const PORT = process.env.PORT || 3333;
+
+const controller = require('./controller.js');
+const printTime = require('./print-time.js');
+
+http.listen(PORT, () => {
+  console.log(`
+${printTime()} server listening on ${ PORT }`);
+});
+
+const connectedUsers = {};
+
+io.on('connection', (socket) => {
+  console.log(``);
+  console.log(`${printTime()} connected new client ${socket.id}`);
+  
+  
+    socket.on('initSignIn', (data) => {
+      controller.initSignIn(data)
+        .then((result) => {
+          socket.emit('signInSuccess', result);
+          connectedUsers[result.name] = socket.id;
+          socket.broadcast.emit('user connected', result.name);
+          
+          console.log('');
+          console.log(`${printTime()} ${result.name} is online`);   
+        }).catch((error) => {
+          if (error.message === 'signInError') {
+            socket.emit('signInError');
+          } else {
+            console.log('');
+            console.log(`${printTime()} error:`);
+            console.log(error);
+            socket.emit('serverError');
+          }
+        });
+    });
+    
+    
+    socket.on('initSignUp', (data) => {
+      controller.initSignUp(data)
+        .then((result) => {
+          socket.emit('signUpSuccess', result);
+          connectedUsers[result.name] = socket.id;
+          socket.broadcast.emit('user created', result.name);
+          
+          console.log('');
+          console.log(`${printTime()} new user ${result.name} joined`);
+        }).catch((error) => {
+          if (error.message === 'signUpError') {
+            socket.emit('signUpError');
+          } else {
+            console.log('');
+            console.log(`${printTime()} error:`);
+            console.log(error);
+            socket.emit('serverError');
+          }
+        });
+    });
+    
+    
+    socket.on('initChat', () => {
+      controller.initChat()
+        .then((result) => {
+          socket.emit('initChatResponse', result);
+        }).catch((error) => {
+          console.log('');
+          console.log(`${printTime()} error:`);
+          console.log(error);
+          socket.emit('serverError');
+        });
+    });
+    
+  
+   
+   
+    socket.on('messageFromClient', (message) => {
+      controller.messageFromClient(message)
+        .then((result) => {
+          io.emit('messageFromServer', result);
+        }).catch((error) => {
+          console.log('');
+          console.log(`${printTime()} error:`);
+          console.log(error);
+          socket.emit('serverError');
+        });
+    });
+    
+    
+    socket.on('user leave', (user) => {
+      if (user.name !== 'default') {
+        controller.userLeave(user)
+          .then(() => {
+            console.log(``);
+            console.log(`${printTime()} ${user.name} is offline`);
+            delete connectedUsers[user.name];
+            io.emit('user leave', user.name);
+          }).catch((error) => {
+            console.log('');
+            console.log(`${printTime()} error:`);
+            console.log(error);
+          });
+      }
+    });
+     
+});
