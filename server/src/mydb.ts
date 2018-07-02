@@ -18,6 +18,8 @@ const sqlRequest = (req:string) => {
       if (error) {
         reject (error);        
       }
+      console.log('rows in db:');
+      console.log(rows);
       resolve(rows);
     });
     
