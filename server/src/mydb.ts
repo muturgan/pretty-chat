@@ -9,7 +9,7 @@ const mysqlConfig = {
   port: 3306,
 };
 
-const myRequest = (req:string) => {
+const sqlRequest = (req:string) => {
   return new Promise(function(resolve, reject) {
     let connection = mymysql.createConnection(mysqlConfig);
     connection.connect();
@@ -25,4 +25,4 @@ const myRequest = (req:string) => {
   });
 };
 
-export default myRequest;
+export default sqlRequest;
