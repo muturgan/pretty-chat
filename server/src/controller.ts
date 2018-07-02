@@ -1,9 +1,11 @@
 import sqlRequest from './db';
+import myRequest from './mydb';
 const Base64 = require('js-base64').Base64;
 
 const controller = {
+
   initSignIn: ( data:{name:string, password:string} ) => {
-    return sqlRequest(`SELECT password FROM users WHERE name="${ Base64.encode(data.name) }";`)
+    return myRequest(`SELECT password FROM users WHERE name="${ Base64.encode(data.name) }";`)
       .then((rows) => {
         if ((rows[0] === undefined) || (Base64.decode(rows[0].password) !== data.password)) {
           throw new Error('signInError');
@@ -42,12 +44,12 @@ const controller = {
   initChat: () => {
     return sqlRequest(`SELECT *, NULL AS password FROM users, messages WHERE messages.author_id = users.id AND messages.room="public";`)
     .then((rows) => {
-      for (let row of rows[0]) {
+      for (let row of rows) {
         row.name = Base64.decode(row.name);
         row.text = Base64.decode(row.text);
       };
       
-      rows[0].sort((row1, row2) => {
+      rows.sort((row1, row2) => {
         if (row1.date > row2.date) return 1;
         if (row1.date < row2.date) return -1;
       });

@@ -1,4 +1,4 @@
-import * as mysql from 'mysql';
+import * as mysql from 'promise-mysql';
 
 const mysqlConfig = {
   host: '128.199.39.117',
@@ -9,15 +9,14 @@ const mysqlConfig = {
 };
 
 const sqlRequest = (req) => {
-  return new Promise(function(resolve, reject) {
-    let connection = mysql.createConnection(mysqlConfig);
-    connection.connect();
-    connection.query(req, function (error, rows) {
-      if (error) reject (error);
-      resolve(rows);
+  return mysql.createConnection(mysqlConfig)
+    .then((connection) => {
+      let rows = connection.query(req);
+      connection.end();
+      return rows;
+    }).catch((error) => {
+      throw error;
     });
-    connection.end();
-  });
 };
 
 export default sqlRequest;
