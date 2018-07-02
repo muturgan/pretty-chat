@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
+//import {Router} from '@angular/router';
 import { SocketService } from '../socket.service';
 
 @Component({
@@ -48,7 +48,7 @@ import { SocketService } from '../socket.service';
 
 
 export class AppChatComponent implements OnInit {
-  private ul;
+  private ul:HTMLUListElement;
   public messages = [];
   private currentUser;
   public chatComment:string = '';
@@ -57,7 +57,7 @@ export class AppChatComponent implements OnInit {
   
   constructor(
     private _socketService: SocketService,
-    private router: Router,
+    //private router: Router,
     ) {
         window.onunload = () => {
           this._socketService.emit('user leave', this.currentUser);
@@ -118,13 +118,13 @@ export class AppChatComponent implements OnInit {
     this.ul = document.body.querySelector('#messagesList');
   }
   
-  public checkKey(event, sendMessageButton) {
+  public checkKey(event, sendMessageButton:HTMLButtonElement) {
     if ((event.keyCode === 13) && (!event.shiftKey)) {
       sendMessageButton.dispatchEvent(this.click);
     }
   }
   
-  public sendMessage(text:string, textarea) {
+  public sendMessage(text:string, textarea:HTMLTextAreaElement) {
     if (text) {
       this._socketService.emit('messageFromClient', {text, author_id: this.currentUser.id});
     }
