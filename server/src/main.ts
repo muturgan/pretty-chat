@@ -1,20 +1,21 @@
-const express = require('express');
-const path = require('path');
+import * as express from 'express';
+import * as socketIO from 'socket.io';
+import * as path from 'path';
+import * as http from 'http';
+import controller from './controller';
+import printTime from './print-time';
+
 const app = express()
   .use(express.static( path.join(__dirname, '../static') ))
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
-  .get('/', (req, res) => {res.sendFile( path.join(__dirname, '/../static/index.html') )});
+  .get('/', (req, res) => { res.sendFile( path.join(__dirname, '/../static/index.html') ); });
 
-
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const server = new http.Server(app);
+const io = socketIO(server);
 const PORT = process.env.PORT || 3333;
 
-import controller from './controller';
-import printTime from './print-time';
-
-http.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`
 ${printTime()} server listening on ${ PORT }`);
 });
@@ -24,17 +25,17 @@ const connectedUsers = {};
 io.on('connection', (socket) => {
   console.log(``);
   console.log(`${printTime()} connected new client ${socket.id}`);
-  
-  
+
+
     socket.on('initSignIn', (data) => {
       controller.initSignIn(data)
         .then((result) => {
           socket.emit('signInSuccess', result);
           connectedUsers[result.name] = socket.id;
           socket.broadcast.emit('user connected', result.name);
-          
+
           console.log('');
-          console.log(`${printTime()} ${result.name} is online`);   
+          console.log(`${printTime()} ${result.name} is online`);
         }).catch((error) => {
           if (error.message === 'signInError') {
             socket.emit('signInError');
@@ -46,15 +47,15 @@ io.on('connection', (socket) => {
           }
         });
     });
-    
-    
+
+
     socket.on('initSignUp', (data) => {
       controller.initSignUp(data)
         .then((result) => {
           socket.emit('signUpSuccess', result);
           connectedUsers[result.name] = socket.id;
           socket.broadcast.emit('user created', result.name);
-          
+
           console.log('');
           console.log(`${printTime()} new user ${result.name} joined`);
         }).catch((error) => {
@@ -68,8 +69,8 @@ io.on('connection', (socket) => {
           }
         });
     });
-    
-    
+
+
     socket.on('initChat', () => {
       controller.initChat()
         .then((result) => {
@@ -81,10 +82,10 @@ io.on('connection', (socket) => {
           socket.emit('serverError');
         });
     });
-    
-  
-   
-   
+
+
+
+
     socket.on('messageFromClient', (message) => {
       controller.messageFromClient(message)
         .then((result) => {
@@ -96,8 +97,8 @@ io.on('connection', (socket) => {
           socket.emit('serverError');
         });
     });
-    
-    
+
+
     socket.on('user leave', (user) => {
       if (user.name !== 'default') {
         controller.userLeave(user)
@@ -113,5 +114,5 @@ io.on('connection', (socket) => {
           });
       }
     });
-     
+
 });

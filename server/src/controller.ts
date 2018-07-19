@@ -1,28 +1,28 @@
-//import sqlRequest from './db';
-import sqlRequest from './mydb';
-const Base64 = require('js-base64').Base64;
+import sqlRequest from './db';
+import * as base64 from 'js-base64';
+const Base64 = base64.Base64;
 
 const controller = {
 
-  initSignIn: async ( data:{name:string, password:string} ) => {
+  initSignIn: async ( data: {name: string, password: string} ) => {
     try {
       let rows = await sqlRequest(`SELECT password FROM users WHERE name="${ Base64.encode(data.name) }";`);
     await function(rows) {
       if ((rows[0] === undefined) || (Base64.decode(rows[0].password) !== data.password)) {
         throw new Error('signInError');
       }
-    }
+    };
     rows = await sqlRequest(`UPDATE users SET status = 'online' WHERE name="${ Base64.encode(data.name) }";`);
     rows = await sqlRequest(`SELECT id, name, status FROM users WHERE name="${ Base64.encode(data.name) }";`);
     rows[0].name = Base64.decode(rows[0].name);
     return rows[0];
 
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   },
-  
-  initSignUp: ( data:{name:string, password:string} ) => {
+
+  initSignUp: ( data: {name: string, password: string} ) => {
     return sqlRequest(`SELECT name FROM users WHERE name="${ Base64.encode(data.name) }";`)
       .then((rows) => {
         if (rows[0]) {
@@ -39,32 +39,32 @@ const controller = {
         throw error;
       });
   },
-  
+
   initChat: () => {
     return sqlRequest(`SELECT *, NULL AS password FROM users, messages WHERE messages.author_id = users.id AND messages.room="public";`)
     .then((rows) => {
 
 
-      
+
       /*for (let row of rows) {
         row.name = Base64.decode(row.name);
         row.text = Base64.decode(row.text);
       };
-      
+
       rows.sort((row1, row2) => {
         if (row1.date > row2.date) return 1;
         if (row1.date < row2.date) return -1;
       });
-      
+
       return rows;*/
     }).catch((error) => {
         throw error;
     });
   },
-  
-  messageFromClient: ( message:{text:string, author_id:number} ) => {
+
+  messageFromClient: ( message: {text: string, author_id: number} ) => {
     const now = Date.now();
-    
+
     return sqlRequest(`INSERT INTO messages (date, text, author_id) VALUES (${now},'${Base64.encode(message.text)}', '${message.author_id}');`)
     .then(() => {
       return sqlRequest(`SELECT *, NULL AS password FROM users, messages WHERE users.id = ${message.author_id} AND messages.room="public" AND messages.date=${now} AND messages.text="${Base64.encode(message.text)}";`)
@@ -74,10 +74,10 @@ const controller = {
       return rows[0];
     }).catch((error) => {
       throw error;
-    }); 
+    });
   },
-  
-  userLeave: (user:{id:number}) => {
+
+  userLeave: (user: {id: number}) => {
     return sqlRequest(`UPDATE users SET status = 'offline' WHERE id="${ user.id }";`)
     .catch((error) => {
       throw error;

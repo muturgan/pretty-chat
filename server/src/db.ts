@@ -11,7 +11,7 @@ const mysqlConfig = {
 const sqlRequest = (req) => {
   return mysql.createConnection(mysqlConfig)
     .then((connection) => {
-      let rows = connection.query(req);
+      const rows = connection.query(req);
       connection.end();
       return rows;
     }).catch((error) => {
