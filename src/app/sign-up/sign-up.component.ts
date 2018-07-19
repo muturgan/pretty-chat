@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { SocketService } from '../socket.service';
+import { CookieService } from '../cookie.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -14,7 +15,7 @@ import { SocketService } from '../socket.service';
           tabindex="5"
             > \u25C0 Back to main page
         </button>
-        
+
         <fieldset class="item-fieldset">
           <legend>Login</legend>
           <input
@@ -25,7 +26,7 @@ import { SocketService } from '../socket.service';
             autofocus
           >
         </fieldset>
-        
+
         <fieldset class="item-fieldset">
           <legend>Password</legend>
           <input
@@ -35,7 +36,7 @@ import { SocketService } from '../socket.service';
             tabindex="2"
           >
         </fieldset>
-        
+
         <fieldset class="item-fieldset">
           <legend>Confirm password</legend>
           <input
@@ -45,7 +46,7 @@ import { SocketService } from '../socket.service';
             tabindex="3"
           >
         </fieldset>
-        
+
         <div class="output-wrapper">
           <output
             data-form="sign-up-output"
@@ -53,76 +54,90 @@ import { SocketService } from '../socket.service';
               >{{ signUpComment }}
           </output>
         </div>
-        
+
         <button
           #signUpButton
-          (click)="checkForm(loginFielf.value, passwordField.value, confirmPasswordField.value)"
+          (click)="checkForm(loginFielf.value, passwordField.value, confirmPasswordField.value, checkbox)"
           tabindex="4"
             >Sign-up
         </button>
+        <br>
+
+        <input #checkbox type="checkbox" checked> <span>remember me</span>
       </fieldset>
     </section>
   `,
   styleUrls: ['./sign-up.component.scss']
 })
 export class AppSignUpComponent {
-  
-  private click:Event = new Event("click");
-  
-  public signUpComment:string = 'Please create your login and password';
-  public commentStatus:string = 'js-neutral';
-  
+
+  private _click: Event = new Event('click');
+
+  public signUpComment = 'Please create your login and password';
+  public commentStatus = 'js-neutral';
+
   constructor(
     private _socketService: SocketService,
-    private router: Router,
+    private _cookieService: CookieService,
+    private _router: Router,
     ) {
+
         this._socketService.signUpSuccess()
-          .subscribe( (user: {id:number, name:string, status:string}) => {
+          .subscribe( (user: {id: number, name: string, status: string}) => {
             this.signUpComment = `New user created. Wellcome ${user.name} :)`;
             this.commentStatus = 'js-success';
-            
-            
+
             setTimeout(() => {
-              this.router.navigate(['chat']);
+              this._router.navigate(['chat']);
             }, 1500);
           });
-          
-        
+
+
         this._socketService.signUpError()
           .subscribe( () => {
             this.signUpComment = `This login is taken. Create different please`;
             this.commentStatus = 'js-warning';
+
+            this._cookieService.deleteCookie('chatUser');
+            this._cookieService.deleteCookie('chatPassword');
           });
-          
-        
+
+
         this._socketService.serverError()
           .subscribe( () => {
             this.signUpComment = `A thousand apologies. We have a problem on server.`;
             this.commentStatus = 'js-warning';
+
+            this._cookieService.deleteCookie('chatUser');
+            this._cookieService.deleteCookie('chatPassword');
           });
       }
-      
-      
-      
-  
-  public checkKey(keyCode:number, signUpButton) {
-    if (keyCode === 13) { //Enter
-      signUpButton.dispatchEvent(this.click);
+
+
+  public checkKey(keyCode: number, signUpButton: HTMLElement): void {
+    if (keyCode === 13) { // Enter
+      signUpButton.dispatchEvent(this._click);
     }
   }
-  
-  public checkForm(login:string, password:string, confirmPassword:string) {
+
+  public checkForm(login: string, password: string, confirmPassword: string, checkbox: HTMLInputElement): void {
     if ( password !== confirmPassword ) {
       this.signUpComment = 'The entered values "Password" and "Confirm password" do not match. Try again please.';
-      this.commentStatus = 'js-warning'
+      this.commentStatus = 'js-warning';
     } else {
       this.signUpComment = 'Your personal data is being sent to the server. Wait a minute please.';
-      this.commentStatus = 'js-neutral'
-      this.initSignUp(login, password);
+      this.commentStatus = 'js-neutral';
+
+      if (checkbox.hasAttribute('checked')) {
+        this._cookieService.setCookie('chatUser', login);
+        this._cookieService.setCookie('chatPassword', password);
+      }
+
+      this._initSignUp(login, password);
     }
   }
-  
-  private initSignUp(login:string, password:string) {
+
+  private _initSignUp(login: string, password: string): void {
     this._socketService.emit('initSignUp', {name: login, password: password});
   }
 

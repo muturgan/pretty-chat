@@ -16,20 +16,23 @@ import { DateService } from './date.service';
 
 
 export class AppMessageComponent implements OnInit  {
-  
-  @Input() currentUser;
-  @Input() message;
-  
-  public messageAuthorship:string = '';
-  
+
+  @Input() currentUser: string;
+  @Input() message: {
+    name: string,
+    status: string,
+    text: string,
+    date: any;
+  };
+
+  public messageAuthorship = '';
+
   constructor(public dateService: DateService) {}
-  
-  
+
   ngOnInit(): void {
     if (this.message.name === this.currentUser) {
       this.messageAuthorship = 'my-message';
-    };
+    }
   }
-  
 
 }

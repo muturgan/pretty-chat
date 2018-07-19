@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-//import { AppRoutingModule } from '../app-routing.module';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CookieService } from '../cookie.service';
 
 @Component({
   selector: 'app-greeting',
@@ -10,7 +11,7 @@ import { Component } from '@angular/core';
         <div>
           Welcome to our pretty chat. Introduce yourself please.
         </div>
-        
+
         <button
           data-form="choose-sign-up-button"
           routerLink="sign-up"
@@ -26,4 +27,20 @@ import { Component } from '@angular/core';
   `,
   styleUrls: ['./greeting.component.scss']
 })
-export class AppGreetingComponent {}
+export class AppGreetingComponent implements OnInit {
+
+  constructor(
+    private _router: Router,
+    private _cookieService: CookieService,
+  ) {}
+
+  ngOnInit() {
+    if (
+      this._cookieService.getCookie('chatUser')
+      && this._cookieService.getCookie('chatPassword')
+    ) {
+        this._router.navigate(['sign-in']);
+      }
+  }
+
+}

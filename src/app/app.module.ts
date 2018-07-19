@@ -9,6 +9,7 @@ import { AppSignInComponent } from './sign-in/sign-in.component';
 import { AppChatComponent } from './chat/chat.component';
 import { AppMessageComponent } from './chat/message/message.component';
 import { SocketService } from './socket.service';
+import { CookieService } from './cookie.service';
 import { DateService } from './chat/message/date.service';
 
 @NgModule({
@@ -24,7 +25,7 @@ import { DateService } from './chat/message/date.service';
     BrowserModule,
     AppRoutingModule,
   ],
-  providers: [SocketService, DateService],
+  providers: [SocketService, CookieService, DateService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
