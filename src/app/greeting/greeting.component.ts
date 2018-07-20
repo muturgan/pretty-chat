@@ -15,11 +15,15 @@ import { CookieService } from '../cookie.service';
         <button
           data-form="choose-sign-up-button"
           routerLink="sign-up"
+          class="btn btn-deep-purple waves-light"
+          mdbWavesEffect
             >Sign-up
         </button>
         <button
           data-form="choose-sign-in-button"
           routerLink="sign-in"
+          class="btn btn-deep-purple waves-light"
+          mdbWavesEffect
             >Sign-in
         </button>
       </fieldset>

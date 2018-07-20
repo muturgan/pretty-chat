@@ -14,6 +14,8 @@ import { CookieService } from '../cookie.service';
           routerLink=""
           fragment="sign-in"
           tabindex="4"
+          class="btn btn-deep-purple waves-light"
+          mdbWavesEffect
             > \u25C0 Back to main page
         </button>
 
@@ -50,6 +52,8 @@ import { CookieService } from '../cookie.service';
           #signInButton
           (click)="checkForm(loginFielf.value, passwordField.value, checkbox)"
           tabindex="3"
+          class="btn btn-deep-purple waves-light"
+          mdbWavesEffect
             >Sign-in
         </button>
         <br>
