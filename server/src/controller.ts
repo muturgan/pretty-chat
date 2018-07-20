@@ -1,4 +1,5 @@
-import sqlRequest from './db';
+// import sqlRequest from './db';
+const sqlRequest = require('./db');
 import * as base64 from 'js-base64';
 const Base64 = base64.Base64;
 

@@ -9,7 +9,10 @@ const app = express()
   .use(express.static( path.join(__dirname, '../static') ))
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
-  .get('/', (req, res) => { res.sendFile( path.join(__dirname, '/../static/index.html') ); });
+  .get('/', (req, res) => { res.sendFile( path.join(__dirname, '/../static/index.html') ); })
+  .get('/sign-in', (req, res) => { res.sendFile( path.join(__dirname, '/../static/index.html') ); })
+  .get('/sign-up', (req, res) => { res.sendFile( path.join(__dirname, '/../static/index.html') ); })
+  .get('/chat', (req, res) => { res.sendFile( path.join(__dirname, '/../static/index.html') ); });
 
 const server = new http.Server(app);
 const io = socketIO(server);
@@ -27,7 +30,7 @@ io.on('connection', (socket) => {
   console.log(`${printTime()} connected new client ${socket.id}`);
 
 
-    socket.on('initSignIn', (data) => {
+    socket.on('initSignIn', (data: {name: string, password: string}) => {
       controller.initSignIn(data)
         .then((result) => {
           socket.emit('signInSuccess', result);
@@ -49,7 +52,7 @@ io.on('connection', (socket) => {
     });
 
 
-    socket.on('initSignUp', (data) => {
+    socket.on('initSignUp', (data: {name: string, password: string}) => {
       controller.initSignUp(data)
         .then((result) => {
           socket.emit('signUpSuccess', result);
@@ -86,7 +89,7 @@ io.on('connection', (socket) => {
 
 
 
-    socket.on('messageFromClient', (message) => {
+    socket.on('messageFromClient', (message: {text: string, author_id: number}) => {
       controller.messageFromClient(message)
         .then((result) => {
           io.emit('messageFromServer', result);
@@ -99,7 +102,7 @@ io.on('connection', (socket) => {
     });
 
 
-    socket.on('user leave', (user) => {
+    socket.on('user leave', (user: {id: number, name: string, status: string}) => {
       if (user.name !== 'default') {
         controller.userLeave(user)
           .then(() => {

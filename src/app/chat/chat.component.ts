@@ -50,7 +50,11 @@ import { SocketService } from '../socket.service';
 export class AppChatComponent implements OnInit {
   private ul: HTMLUListElement;
   public messages = [];
-  private currentUser;
+  private currentUser: {
+    id: number,
+    name: string,
+    status: string,
+  };
   public chatComment = '';
 
   private click: Event = new Event('click');

@@ -1,4 +1,5 @@
-import * as mysql from 'promise-mysql';
+// import * as mysql from 'promise-mysql';
+const mysql = require('promise-mysql');
 
 const mysqlConfig = {
   host: '128.199.39.117',
@@ -8,7 +9,7 @@ const mysqlConfig = {
   port: 3306,
 };
 
-const sqlRequest = (req) => {
+const sqlRequest = (req: string) => {
   return mysql.createConnection(mysqlConfig)
     .then((connection) => {
       const rows = connection.query(req);
@@ -19,4 +20,6 @@ const sqlRequest = (req) => {
     });
 };
 
-export default sqlRequest;
+module.exports = sqlRequest;
+
+// export default sqlRequest;
