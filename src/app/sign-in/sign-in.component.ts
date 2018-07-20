@@ -12,6 +12,7 @@ import { CookieService } from '../cookie.service';
         <button
           data-form="sign-in-back-button"
           routerLink=""
+          fragment="sign-in"
           tabindex="4"
             > \u25C0 Back to main page
         </button>

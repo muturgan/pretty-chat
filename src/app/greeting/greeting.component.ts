@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterEvent } from '@angular/router';
 import { CookieService } from '../cookie.service';
 
 @Component({
@@ -30,17 +30,27 @@ import { CookieService } from '../cookie.service';
 export class AppGreetingComponent implements OnInit {
 
   constructor(
+    private _route: ActivatedRoute,
     private _router: Router,
     private _cookieService: CookieService,
-  ) {}
+  ) {
+      // this._router.events.pairwise().subscribe((event: RouterEvent) => {
+      //   console.log(event);
+      // });
+
+      this._route.params.subscribe((params) => {
+        console.log('params:');
+        console.log(params);
+      });
+    }
 
   ngOnInit() {
-    if (
-      this._cookieService.getCookie('chatUser')
-      && this._cookieService.getCookie('chatPassword')
-    ) {
-        this._router.navigate(['sign-in']);
-      }
+    // if (
+    //   this._cookieService.getCookie('chatUser')
+    //   && this._cookieService.getCookie('chatPassword')
+    // ) {
+    //     this._router.navigate(['sign-in']);
+    //   }
   }
 
 }
