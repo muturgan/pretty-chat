@@ -12,6 +12,7 @@ import { AppChatComponent } from './chat/chat.component';
 import { AppMessageComponent } from './chat/message/message.component';
 import { SocketService } from './socket.service';
 import { CookieService } from './cookie.service';
+import { RouterService } from './router.service';
 import { DateService } from './chat/message/date.service';
 
 @NgModule({
@@ -28,7 +29,7 @@ import { DateService } from './chat/message/date.service';
     AppRoutingModule,
     MDBBootstrapModule.forRoot()
   ],
-  providers: [SocketService, CookieService, DateService],
+  providers: [SocketService, CookieService, RouterService, DateService],
   bootstrap: [AppComponent],
   schemas: [ NO_ERRORS_SCHEMA ]
 })

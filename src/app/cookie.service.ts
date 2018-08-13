@@ -12,7 +12,7 @@ export class CookieService {
   }
 
   public getCookie(key?: string): string {
-    if (key) {
+    if (key && key !== '') {
       const matches = document.cookie.match(new RegExp(
         '(?:^|; )' + key.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
       ));

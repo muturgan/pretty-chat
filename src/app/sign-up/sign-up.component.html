@@ -1,0 +1,107 @@
+<div class="full-bg-img mask rgba-white-light">
+    <div class="container flex-center">
+      <div class="row pt-5 mt-3 w-100">
+        <div class="col-md-12 mb-3">
+          <div class="intro-info-content text-center">
+  
+            <!--Section: Contact v.1-->
+<section class="pb-5">
+
+    <div class="row">
+
+        <!--Grid column-->
+        <div class="col"></div>
+
+        <div class="col-lg-5 mb-4">
+
+            <!--Form with header-->
+            <div class="card">
+
+                <div class="card-body">
+                    <!--Header-->
+                    <div class="form-header blue accent-1">
+                        <h3> - Sign Up - </h3>
+                    </div>
+
+                    <div [class]="commentStatus">
+                        {{ signUpComment }}
+                    </div>
+                    <br>
+
+                    <!--Body-->
+                    <div class="md-form">
+                        <i class="fa fa-user prefix grey-text"></i>
+                        <input
+                            mdbInputDirective
+                            type="text"
+                            id="form3"
+                            class="form-control"
+                            (keydown)="checkKey($event.keyCode, signUpButton)"
+                            #loginFielf
+                        >
+                        <label for="form3">Login</label>
+                    </div>
+
+                    <div class="md-form">
+                        <i class="fa fa-envelope prefix grey-text"></i>
+                        <input
+                            mdbInputDirective
+                            type="password"
+                            id="form2"
+                            class="form-control"
+                            (keydown)="checkKey($event.keyCode, signUpButton)"
+                            #passwordField
+                        >
+                        <label for="form2">Password</label>
+                    </div>
+
+                    <div class="md-form">
+                        <i class="fa fa-tag prefix grey-text"></i>
+                        <input
+                            mdbInputDirective
+                            type="password"
+                            id="form34"
+                            class="form-control"
+                            (keydown)="checkKey($event.keyCode, signUpButton)"
+                            #confirmPasswordField
+                        >
+                        <label for="form34">Confirm password</label>
+                    </div>
+
+                    <div class="md-form">
+                        <input #checkbox type="checkbox" checked> <span>remember me</span>
+                    </div>
+
+                    <div class="text-center button-group">
+                        <button routerLink="" class="btn btn-indigo waves-light" mdbWavesEffect>Exit</button>
+                        <button
+                            #signUpButton
+                            (click)="checkForm(loginFielf.value, passwordField.value, confirmPasswordField.value, checkbox)"
+                            class="btn btn-indigo waves-light"
+                            mdbWavesEffect
+                                >Sign Up
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+            <!--Form with header-->
+
+        </div>
+
+        <div class="col"></div>
+        <!--Grid column-->
+
+        
+
+    </div>
+
+</section>
+<!--Section: Contact v.1-->
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

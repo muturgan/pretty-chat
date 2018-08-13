@@ -1,4 +1,4 @@
-const printTime = () => {
+const printTime = (): string => {
   const date = new Date;
   let timeString = `[${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}]`;
   if (timeString[2] === ':') {

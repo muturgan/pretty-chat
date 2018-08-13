@@ -25,12 +25,9 @@
       true,
       "spaces"
     ],
-    "interface-over-type-literal": true,
+    "interface-over-type-literal": false,
     "label-position": true,
-    "max-line-length": [
-      true,
-      140
-    ],
+    "max-line-length": [false],
     "member-access": false,
     "member-ordering": [
       true,
@@ -45,24 +42,14 @@
     ],
     "no-arg": true,
     "no-bitwise": true,
-    "no-console": [
-      true,
-      "debug",
-      "info",
-      "time",
-      "timeEnd",
-      "trace"
-    ],
+    "no-console": [false],
     "no-construct": true,
     "no-debugger": true,
     "no-duplicate-super": true,
     "no-empty": false,
     "no-empty-interface": true,
     "no-eval": true,
-    "no-inferrable-types": [
-      true,
-      "ignore-params"
-    ],
+    "no-inferrable-types": [false],
     "no-misused-new": true,
     "no-non-null-assertion": true,
     "no-shadowed-variable": true,

@@ -1,7 +1,10 @@
-import * as express from 'express';
-import * as socketIO from 'socket.io';
-import * as path from 'path';
-import * as http from 'http';
+// import Promise from 'bluebird';
+// global.Promise = Promise;
+
+import express from 'express';
+import socketIO from 'socket.io';
+import path = require('path');
+import http = require('http');
 import controller from './controller';
 import printTime from './print-time';
 
@@ -85,8 +88,6 @@ io.on('connection', (socket) => {
           socket.emit('serverError');
         });
     });
-
-
 
 
     socket.on('messageFromClient', (message: {text: string, author_id: number}) => {
