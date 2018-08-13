@@ -17,15 +17,6 @@ const sqlRequest = async (req: string) => {
     } catch (error) {
         throw error;
     }
-
-  // return mysql.createConnection(mysqlConfig)
-  //   .then((connection) => {
-  //     const rows = connection.query(req);
-  //     connection.end();
-  //     return rows;
-  //   }).catch((error) => {
-  //     throw error;
-  //   });
 };
 
 export default sqlRequest;
