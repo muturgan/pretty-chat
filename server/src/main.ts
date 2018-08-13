@@ -33,89 +33,89 @@ io.on('connection', (socket) => {
   console.log(`${printTime()} connected new client ${socket.id}`);
 
 
-    socket.on('initSignIn', (data: {name: string, password: string}) => {
-      controller.initSignIn(data)
-        .then((result) => {
-          socket.emit('signInSuccess', result);
-          connectedUsers[result.name] = socket.id;
-          socket.broadcast.emit('user connected', result.name);
+    socket.on('initSignIn', async (data: {name: string, password: string}) => {
+        try {
+            const result = await controller.initSignIn(data);
+            socket.emit('signInSuccess', result);
+            connectedUsers[result.name] = socket.id;
+            socket.broadcast.emit('user connected', result.name);
 
-          console.log('');
-          console.log(`${printTime()} ${result.name} is online`);
-        }).catch((error) => {
-          if (error.message === 'signInError') {
-            socket.emit('signInError');
-          } else {
             console.log('');
-            console.log(`${printTime()} error:`);
-            console.log(error);
-            socket.emit('serverError');
-          }
-        });
+            console.log(`${printTime()} ${result.name} is online`);
+        } catch (error) {
+            if (error.message === 'signInError') {
+                socket.emit('signInError');
+            } else {
+                console.log('');
+                console.log(`${printTime()} error:`);
+                console.error(error);
+                socket.emit('serverError');
+            }
+        }
     });
 
 
-    socket.on('initSignUp', (data: {name: string, password: string}) => {
-      controller.initSignUp(data)
-        .then((result) => {
+    socket.on('initSignUp', async (data: {name: string, password: string}) => {
+      try {
+          const result = await controller.initSignUp(data);
           socket.emit('signUpSuccess', result);
           connectedUsers[result.name] = socket.id;
           socket.broadcast.emit('user created', result.name);
 
           console.log('');
           console.log(`${printTime()} new user ${result.name} joined`);
-        }).catch((error) => {
+      } catch (error) {
           if (error.message === 'signUpError') {
-            socket.emit('signUpError');
+              socket.emit('signUpError');
           } else {
-            console.log('');
-            console.log(`${printTime()} error:`);
-            console.log(error);
-            socket.emit('serverError');
+              console.log('');
+              console.log(`${printTime()} error:`);
+              console.error(error);
+              socket.emit('serverError');
           }
-        });
+      }
     });
 
 
-    socket.on('initChat', () => {
-      controller.initChat()
-        .then((result) => {
+    socket.on('initChat', async () => {
+      try {
+          const result = await controller.initChat();
           socket.emit('initChatResponse', result);
-        }).catch((error) => {
+      } catch (error) {
           console.log('');
           console.log(`${printTime()} error:`);
-          console.log(error);
+          console.error(error);
           socket.emit('serverError');
-        });
+      }
     });
 
 
-    socket.on('messageFromClient', (message: {text: string, author_id: number}) => {
-      controller.messageFromClient(message)
-        .then((result) => {
+    socket.on('messageFromClient', async (message: {text: string, author_id: number}) => {
+      try {
+          const result = await controller.messageFromClient(message);
           io.emit('messageFromServer', result);
-        }).catch((error) => {
+      } catch (error) {
           console.log('');
           console.log(`${printTime()} error:`);
-          console.log(error);
+          console.error(error);
           socket.emit('serverError');
-        });
+      }
     });
 
 
-    socket.on('user leave', (user: {id: number, name: string, status: string}) => {
+    socket.on('user leave', async (user: {id: number, name: string, status: string}) => {
       if (user.name !== 'default') {
-        controller.userLeave(user)
-          .then(() => {
+        try {
+            await controller.userLeave(user);
             console.log(``);
             console.log(`${printTime()} ${user.name} is offline`);
             delete connectedUsers[user.name];
             io.emit('user leave', user.name);
-          }).catch((error) => {
+        } catch (error) {
             console.log('');
             console.log(`${printTime()} error:`);
-            console.log(error);
-          });
+            console.error(error);
+        }
       }
     });
 
