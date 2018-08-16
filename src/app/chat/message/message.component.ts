@@ -22,7 +22,7 @@ export class AppMessageComponent implements OnInit  {
     name: string,
     status: string,
     text: string,
-    date: any;
+    date: number,
   };
 
   public messageAuthorship = '';

@@ -5,10 +5,14 @@ import { Injectable } from '@angular/core';
 })
 export class DateService {
 
-  public prettierDate(date: number) {
+  public get prettierDate() {
+    return this._prettierDate;
+  }
+
+  private _prettierDate(date: number): string {
     const now: number = Date.now();
     let dateString = '';
-    const dateDifference: number = now - date;
+    const dateDifference: number = Date.now() - date;
 
     switch (true) {
       case ( (dateDifference < 86400000/*24 hours*/) && ((new Date(now)).getDate() === (new Date(date)).getDate()) ):

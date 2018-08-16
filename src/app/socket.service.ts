@@ -2,6 +2,17 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import io from 'socket.io-client';
 
+type messageType = {
+  id: number,
+  name: string,
+  status: string,
+  password: null,
+  date: number,
+  room: string,
+  text: string,
+  author_id: number,
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -87,7 +98,7 @@ export class SocketService {
 
   public messageFromServer() {
     const observable = new Observable((observer) => {
-      this.socket.on('messageFromServer', (message) => {
+      this.socket.on('messageFromServer', (message: messageType) => {
         observer.next(message);
       });
     });

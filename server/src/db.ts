@@ -1,6 +1,8 @@
 import mysql from 'promise-mysql';
 
-const mysqlConfig = {
+type mysqlConfigType = {readonly [key: string]: string|number};
+
+const mysqlConfig: mysqlConfigType = {
     host: '128.199.39.117',
     user: 'node',
     password: 'edon',

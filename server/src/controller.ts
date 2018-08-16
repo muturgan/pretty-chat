@@ -2,6 +2,8 @@ import sqlRequest from './db';
 import base64 = require('js-base64');
 const Base64 = base64.Base64;
 
+type controllerType = {readonly [key: string]: any};
+
 type messageType = {
   id: number,
   name: string,
@@ -13,7 +15,7 @@ type messageType = {
   author_id: number,
 };
 
-const controller = {
+const controller: controllerType = {
 
   initSignIn: async ( data: {name: string, password: string} ) => {
     try {
@@ -59,8 +61,8 @@ const controller = {
         row.text = Base64.decode(row.text);
       }
       rows.sort((row1, row2) => {
-        if (row1.date > row2.date) return 1;
-        if (row1.date < row2.date) return -1;
+        if (row1.date > row2.date) { return 1; }
+        if (row1.date < row2.date) { return -1; }
       });
       return rows;
     } catch (error) {
@@ -71,8 +73,9 @@ const controller = {
   messageFromClient: async ( message: {text: string, author_id: number} ) => {
     try {
       const now = Date.now();
+      await sqlRequest(`INSERT INTO messages (date, text, author_id) VALUES (${now},'${Base64.encode(message.text)}', '${message.author_id}');`);
       const rows: [messageType] =
-        await sqlRequest(`INSERT INTO messages (date, text, author_id) VALUES (${now},'${Base64.encode(message.text)}', '${message.author_id}');`);
+        await sqlRequest(`SELECT *, NULL AS password FROM users, messages WHERE users.id = ${message.author_id} AND messages.room="public" AND messages.date=${now} AND messages.text="${Base64.encode(message.text)}";`);
       rows[0].name = Base64.decode(rows[0].name);
       rows[0].text = Base64.decode(rows[0].text);
       return rows[0];
@@ -81,12 +84,13 @@ const controller = {
     }
   },
 
-  userLeave: (user: {id: number}) => {
+  userLeave: async (user: {id: number}) => {
     return sqlRequest(`UPDATE users SET status = 'offline' WHERE id="${ user.id }";`)
     .catch((error) => {
       throw error;
     });
   },
+
 };
 
 export default controller;

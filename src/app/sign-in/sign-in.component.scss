@@ -7,7 +7,26 @@
     height: 570px;
 }
 
-.button-group {
-    position: relative;
-    top: 100px;
+.sign-in-section {
+    width: 385px;
+    height: 440px;
+}
+
+#comment-holder {
+    height: 74px;
+}
+
+.form-header {
+    border-radius: 4px;
+}
+
+.buttons {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 25px;
+    width: 345px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }

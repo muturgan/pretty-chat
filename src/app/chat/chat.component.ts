@@ -2,6 +2,17 @@ import { Component, OnInit } from '@angular/core';
 // import {Router} from '@angular/router';
 import { SocketService } from '../socket.service';
 
+type messageType = {
+  id: number,
+  name: string,
+  status: string,
+  password: null,
+  date: number,
+  room: string,
+  text: string,
+  author_id: number,
+};
+
 @Component({
   selector: 'app-chat',
   template: `
@@ -49,19 +60,19 @@ import { SocketService } from '../socket.service';
 
 export class AppChatComponent implements OnInit {
   private ul: HTMLUListElement;
-  public messages = [];
-  private currentUser: {
+  public messages: Array< messageType > = [];
+  public currentUser: {
     id: number,
     name: string,
     status: string,
   };
   public chatComment = '';
 
-  private click: Event = new Event('click');
+  private click: MouseEvent = new MouseEvent('click');
 
   constructor(
     private _socketService: SocketService,
-    // private router: Router,
+    // private _router: Router,
     ) {
         window.onunload = () => {
           this._socketService.emit('user leave', this.currentUser);
@@ -69,11 +80,11 @@ export class AppChatComponent implements OnInit {
 
 
         this._socketService.initChatResponse()
-          .subscribe( (messages) => {
+          .subscribe( (messages: Array<messageType>) => {
             (() => {
               let i = 0;
               const timerId = setInterval(() => {
-                if (messages[i]) { // can't reed propertu '0' of null -> on logout
+                if (messages[i]) {
                   this.printMessage(messages[i]);
                 } else {
                   clearInterval(timerId);
@@ -84,7 +95,7 @@ export class AppChatComponent implements OnInit {
           });
 
         this._socketService.messageFromServer()
-          .subscribe( (message) => {
+          .subscribe( (message: messageType) => {
             this.printMessage(message);
           });
 
@@ -122,20 +133,20 @@ export class AppChatComponent implements OnInit {
     this.ul = document.body.querySelector('#messagesList');
   }
 
-  public checkKey(event, sendMessageButton: HTMLButtonElement) {
+  public checkKey(event, sendMessageButton: HTMLButtonElement): void {
     if ((event.keyCode === 13) && (!event.shiftKey)) {
       sendMessageButton.dispatchEvent(this.click);
     }
   }
 
-  public sendMessage(text: string, textarea: HTMLTextAreaElement) {
+  public sendMessage(text: string, textarea: HTMLTextAreaElement): void {
     if (text) {
       this._socketService.emit('messageFromClient', {text, author_id: this.currentUser.id});
     }
     textarea.value = null;
   }
 
-  private printMessage(message) {
+  private printMessage(message: messageType): void {
     this.messages.push(message);
 
     setTimeout(() => {
@@ -145,7 +156,7 @@ export class AppChatComponent implements OnInit {
     }, 1);
   }
 
-  public leaveChat() {
+  public leaveChat(): void {
     this._socketService.emit('user leave', this.currentUser);
   }
 
@@ -157,14 +168,6 @@ export class AppChatComponent implements OnInit {
         message = updatedMessage;
       }
     }
-
-/*     this.messages = this.messages.map((message) => {
-      if (message.name === userName) {
-        message.status = status;
-        return message;
-      }
-      return message;
-    }); */
-
   }
+
 }
