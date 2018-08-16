@@ -3,7 +3,8 @@ import winston from 'winston';
 const logger = winston.createLogger({
     format: winston.format.combine(
         winston.format.timestamp(),
-        winston.format.printf( (info: any) => `${info.timestamp} [${info.level}]: ${info.message}`),
+        winston.format.printf( (info: any) => `
+${info.timestamp} [${info.level}]: ${info.message}`),
     ),
 
     transports: [

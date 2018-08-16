@@ -7,7 +7,6 @@ import path = require('path');
 import http = require('http');
 import controller from './controller';
 import logger from './logger';
-// import printTime from './print-time';
 
 const app = express()
     .use(express.static( path.join(__dirname, '../static') ))
@@ -27,16 +26,12 @@ const io = socketIO(server);
 const PORT = process.env.PORT || 3333;
 
 server.listen(PORT, () => {
-    console.log(``);
     logger.info(`server listening on ${ PORT }`);
-// ${printTime()} server listening on ${ PORT }`);
 });
 
 const connectedUsers = {};
 
 io.on('connection', (socket) => {
-    console.log(``);
-//   console.log(`${printTime()} connected new client ${socket.id}`);
     logger.info(`connected new client ${socket.id}`);
 
 
@@ -47,16 +42,11 @@ io.on('connection', (socket) => {
             connectedUsers[result.name] = socket.id;
             socket.broadcast.emit('user connected', result.name);
 
-            console.log('');
-            // console.log(`${printTime()} ${result.name} is online`);
             logger.info(`${result.name} is online`);
         } catch (error) {
             if (error.message === 'signInError') {
                 socket.emit('signInError');
             } else {
-                console.log('');
-                // console.log(`${printTime()} error:`);
-                // console.error(error);
                 logger.error(error);
                 socket.emit('serverError');
             }
@@ -71,16 +61,11 @@ io.on('connection', (socket) => {
             connectedUsers[result.name] = socket.id;
             socket.broadcast.emit('user created', result.name);
 
-            console.log('');
-        //   console.log(`${printTime()} new user ${result.name} joined`);
             logger.info(`new user ${result.name} joined`);
         } catch (error) {
             if (error.message === 'signUpError') {
                 socket.emit('signUpError');
             } else {
-                console.log('');
-            //   console.log(`${printTime()} error:`);
-            //   console.error(error);
                 logger.error(error);
                 socket.emit('serverError');
             }
@@ -93,9 +78,6 @@ io.on('connection', (socket) => {
             const result = await controller.initChat();
             socket.emit('initChatResponse', result);
       } catch (error) {
-            console.log('');
-        //   console.log(`${printTime()} error:`);
-        //   console.error(error);
             logger.error(error);
             socket.emit('serverError');
       }
@@ -107,10 +89,6 @@ io.on('connection', (socket) => {
             const result = await controller.messageFromClient(message);
             io.emit('messageFromServer', result);
         } catch (error) {
-            console.log('');
-            // console.log(`${printTime()} error:`);
-            // console.error(error);
-            console.error('error:');
             logger.error(error);
             socket.emit('serverError');
         }
@@ -121,15 +99,10 @@ io.on('connection', (socket) => {
       if (user.name !== 'default') {
         try {
             await controller.userLeave(user);
-            console.log(``);
-            // console.log(`${printTime()} ${user.name} is offline`);
             logger.info(`${user.name} is offline`);
             delete connectedUsers[user.name];
             io.emit('user leave', user.name);
         } catch (error) {
-            console.log('');
-            // console.log(`${printTime()} error:`);
-            // console.error(error);
             logger.error(error);
         }
       }
