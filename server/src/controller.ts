@@ -1,19 +1,9 @@
 import sqlRequest from './db';
+import { messageType, userInfoType } from './types';
 import base64 = require('js-base64');
 const Base64 = base64.Base64;
 
 type controllerType = {readonly [key: string]: any};
-
-type messageType = {
-  id: number,
-  name: string,
-  status: string,
-  password: null,
-  date: number,
-  room: string,
-  text: string,
-  author_id: number,
-};
 
 const controller: controllerType = {
 
@@ -25,7 +15,7 @@ const controller: controllerType = {
         throw new Error('signInError');
       } else {
         await sqlRequest(`UPDATE users SET status = 'online' WHERE name="${ Base64.encode(data.name) }";`);
-        const rows1: [{ id: number, name: string, status: string }] =
+        const rows1: [userInfoType] =
           await sqlRequest(`SELECT id, name, status FROM users WHERE name="${ Base64.encode(data.name) }"`);
         rows1[0].name = Base64.decode(rows1[0].name);
         return rows1[0];
@@ -43,8 +33,9 @@ const controller: controllerType = {
         throw new Error('signUpError');
       } else {
         await sqlRequest(`INSERT INTO users (name, password, status) VALUES ('${ Base64.encode(data.name) }', '${ Base64.encode(data.password) }', 'online');`);
-        const rows1: [{ id: number, name: string, status: string }] =
+        const rows1: [userInfoType] =
           await sqlRequest(`SELECT id, name, status FROM users WHERE name="${ Base64.encode(data.name) }"`);
+        rows1[0].name = Base64.decode(rows1[0].name);
         return rows1[0];
       }
     } catch (error) {
@@ -84,8 +75,8 @@ const controller: controllerType = {
     }
   },
 
-  userLeave: async (user: {id: number}) => {
-    return sqlRequest(`UPDATE users SET status = 'offline' WHERE id="${ user.id }";`)
+  userLeave: async (userId: number) => {
+    return sqlRequest(`UPDATE users SET status = 'offline' WHERE id="${ userId }";`)
     .catch((error) => {
       throw error;
     });

@@ -1,9 +1,10 @@
 import winston from 'winston';
+import { TransformableInfo } from 'logform';
 
 const logger = winston.createLogger({
     format: winston.format.combine(
         winston.format.timestamp(),
-        winston.format.printf( (info: any) => `
+        winston.format.printf( (info: TransformableInfo) => `
 ${info.timestamp} [${info.level}]: ${info.message}`),
     ),
 

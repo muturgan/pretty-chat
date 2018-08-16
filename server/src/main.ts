@@ -7,6 +7,7 @@ import path = require('path');
 import http = require('http');
 import controller from './controller';
 import logger from './logger';
+import { messageType, userInfoType } from './types';
 
 const app = express()
     .use(express.static( path.join(__dirname, '../static') ))
@@ -34,10 +35,9 @@ const connectedUsers = {};
 io.on('connection', (socket) => {
     logger.info(`connected new client ${socket.id}`);
 
-
     socket.on('initSignIn', async (data: {name: string, password: string}) => {
         try {
-            const result = await controller.initSignIn(data);
+            const result: userInfoType = await controller.initSignIn(data);
             socket.emit('signInSuccess', result);
             connectedUsers[result.name] = socket.id;
             socket.broadcast.emit('user connected', result.name);
@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
             if (error.message === 'signInError') {
                 socket.emit('signInError');
             } else {
-                logger.error(error);
+                logger.error(`errorno: ${error.errorno}; code: ${error.code}; syscall: ${error.syscall}; fatal: ${error.fatal}`);
                 socket.emit('serverError');
             }
         }
@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
 
     socket.on('initSignUp', async (data: {name: string, password: string}) => {
         try {
-            const result = await controller.initSignUp(data);
+            const result: userInfoType = await controller.initSignUp(data);
             socket.emit('signUpSuccess', result);
             connectedUsers[result.name] = socket.id;
             socket.broadcast.emit('user created', result.name);
@@ -66,7 +66,7 @@ io.on('connection', (socket) => {
             if (error.message === 'signUpError') {
                 socket.emit('signUpError');
             } else {
-                logger.error(error);
+                logger.error(`errorno: ${error.errorno}; code: ${error.code}; syscall: ${error.syscall}; fatal: ${error.fatal}`);
                 socket.emit('serverError');
             }
         }
@@ -75,10 +75,10 @@ io.on('connection', (socket) => {
 
     socket.on('initChat', async () => {
       try {
-            const result = await controller.initChat();
+            const result: Array<messageType> = await controller.initChat();
             socket.emit('initChatResponse', result);
       } catch (error) {
-            logger.error(error);
+            logger.error(`errorno: ${error.errorno}; code: ${error.code}; syscall: ${error.syscall}; fatal: ${error.fatal}`);
             socket.emit('serverError');
       }
     });
@@ -86,24 +86,24 @@ io.on('connection', (socket) => {
 
     socket.on('messageFromClient', async (message: {text: string, author_id: number}) => {
         try {
-            const result = await controller.messageFromClient(message);
+            const result: messageType = await controller.messageFromClient(message);
             io.emit('messageFromServer', result);
         } catch (error) {
-            logger.error(error);
+            logger.error(`errorno: ${error.errorno}; code: ${error.code}; syscall: ${error.syscall}; fatal: ${error.fatal}`);
             socket.emit('serverError');
         }
     });
 
 
-    socket.on('user leave', async (user: {id: number, name: string, status: string}) => {
+    socket.on('user leave', async (user: userInfoType) => {
       if (user.name !== 'default') {
         try {
-            await controller.userLeave(user);
+            await controller.userLeave(user.id);
             logger.info(`${user.name} is offline`);
             delete connectedUsers[user.name];
             io.emit('user leave', user.name);
         } catch (error) {
-            logger.error(error);
+            logger.error(`errorno: ${error.errorno}; code: ${error.code}; syscall: ${error.syscall}; fatal: ${error.fatal}`);
         }
       }
     });
