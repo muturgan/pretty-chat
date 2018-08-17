@@ -1,7 +1,7 @@
 import winston from 'winston';
 import { TransformableInfo } from 'logform';
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
     format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.printf( (info: TransformableInfo) => `
@@ -14,4 +14,10 @@ ${info.timestamp} [${info.level}]: ${info.message}`),
     ],
 });
 
-export default logger;
+export const errorString = (error: {[key: string]: any}): string => {
+    let str = '';
+    for (let key in error) {
+        str += `${key}: ${error[key]}; `;
+    }
+    return str;
+};

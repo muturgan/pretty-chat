@@ -3,11 +3,29 @@ import { messageType, userInfoType } from './types';
 import base64 = require('js-base64');
 const Base64 = base64.Base64;
 
-type controllerType = {readonly [key: string]: any};
+class Controller {
 
-const controller: controllerType = {
+  public get initSignIn() {
+    return this._initSignIn;
+  }
 
-  initSignIn: async ( data: {name: string, password: string} ) => {
+  public get initSignUp() {
+    return this._initSignUp;
+  }
+
+  public get initChat() {
+    return this._initChat;
+  }
+
+  public get messageFromClient() {
+    return this._messageFromClient;
+  }
+
+  public get userLeave() {
+    return this._userLeave;
+  }
+
+  private async _initSignIn( data: {name: string, password: string} ): Promise<userInfoType> {
     try {
       const rows: [{ password: string }] =
         await sqlRequest(`SELECT password FROM users WHERE name="${ Base64.encode(data.name) }";`);
@@ -23,9 +41,9 @@ const controller: controllerType = {
     } catch (error) {
       throw error;
     }
-  },
+  }
 
-  initSignUp: async ( data: {name: string, password: string} ) => {
+  private async _initSignUp( data: {name: string, password: string} ): Promise<userInfoType> {
     try {
       const rows: Array<{ name: string }> =
         await sqlRequest(`SELECT name FROM users WHERE name="${ Base64.encode(data.name) }";`);
@@ -41,9 +59,9 @@ const controller: controllerType = {
     } catch (error) {
       throw error;
     }
-  },
+  }
 
-  initChat: async () => {
+  private async _initChat(): Promise< Array<messageType> > {
     try {
       const rows: Array<messageType> =
         await sqlRequest(`SELECT *, NULL AS password FROM users, messages WHERE messages.author_id = users.id AND messages.room="public";`);
@@ -59,9 +77,9 @@ const controller: controllerType = {
     } catch (error) {
       throw error;
     }
-  },
+  }
 
-  messageFromClient: async ( message: {text: string, author_id: number} ) => {
+  private async _messageFromClient( message: {text: string, author_id: number} ): Promise<messageType> {
     try {
       const now = Date.now();
       await sqlRequest(`INSERT INTO messages (date, text, author_id) VALUES (${now},'${Base64.encode(message.text)}', '${message.author_id}');`);
@@ -73,15 +91,15 @@ const controller: controllerType = {
     } catch (error) {
       throw error;
     }
-  },
+  }
 
-  userLeave: async (userId: number) => {
+  private async _userLeave(userId: number): Promise<any> {
     return sqlRequest(`UPDATE users SET status = 'offline' WHERE id="${ userId }";`)
     .catch((error) => {
       throw error;
     });
-  },
+  }
 
-};
+}
 
-export default controller;
+export default Controller;

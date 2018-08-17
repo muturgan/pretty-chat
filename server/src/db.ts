@@ -1,6 +1,5 @@
 import mysql from 'promise-mysql';
-
-type mysqlConfigType = {readonly [key: string]: string|number};
+import { mysqlConfigType } from './types';
 
 const mysqlConfig: mysqlConfigType = {
     host: '128.199.39.117',

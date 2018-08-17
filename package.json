@@ -13,7 +13,7 @@
     "url": "https://github.com/muturgan/pretty-chat.git"
   },
   "author": "Sakharov Andrey",
-  "license": "ISC",
+  "license": "MIT",
   "homepage": "https://github.com/muturgan/pretty-chat/blob/master/README.md",
   "dependencies": {
     "express": "^4.16.3",
@@ -23,7 +23,7 @@
     "winston": "^3.0.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.7.3",
+    "@angular-devkit/build-angular": "^0.7.4",
     "@angular/animations": "^6.1.3",
     "@angular/common": "^6.1.3",
     "@angular/compiler": "^6.1.3",

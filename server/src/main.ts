@@ -1,13 +1,15 @@
-// import Promise from 'bluebird';
-// global.Promise = Promise;
+import Bluebird from 'bluebird';
+global.Promise = Bluebird;
 
 import express from 'express';
 import socketIO from 'socket.io';
 import path = require('path');
 import http = require('http');
-import controller from './controller';
-import logger from './logger';
+import Controller from './controller';
+import { logger, errorString } from './logger';
 import { messageType, userInfoType } from './types';
+
+const controller = new Controller;
 
 const app = express()
     .use(express.static( path.join(__dirname, '../static') ))
@@ -47,7 +49,7 @@ io.on('connection', (socket) => {
             if (error.message === 'signInError') {
                 socket.emit('signInError');
             } else {
-                logger.error(`errorno: ${error.errorno}; code: ${error.code}; syscall: ${error.syscall}; fatal: ${error.fatal}`);
+                logger.error(errorString(error));
                 socket.emit('serverError');
             }
         }
@@ -66,7 +68,7 @@ io.on('connection', (socket) => {
             if (error.message === 'signUpError') {
                 socket.emit('signUpError');
             } else {
-                logger.error(`errorno: ${error.errorno}; code: ${error.code}; syscall: ${error.syscall}; fatal: ${error.fatal}`);
+                logger.error(errorString(error));
                 socket.emit('serverError');
             }
         }
@@ -78,7 +80,7 @@ io.on('connection', (socket) => {
             const result: Array<messageType> = await controller.initChat();
             socket.emit('initChatResponse', result);
       } catch (error) {
-            logger.error(`errorno: ${error.errorno}; code: ${error.code}; syscall: ${error.syscall}; fatal: ${error.fatal}`);
+            logger.error(errorString(error));
             socket.emit('serverError');
       }
     });
@@ -89,7 +91,7 @@ io.on('connection', (socket) => {
             const result: messageType = await controller.messageFromClient(message);
             io.emit('messageFromServer', result);
         } catch (error) {
-            logger.error(`errorno: ${error.errorno}; code: ${error.code}; syscall: ${error.syscall}; fatal: ${error.fatal}`);
+            logger.error(errorString(error));
             socket.emit('serverError');
         }
     });
@@ -103,7 +105,7 @@ io.on('connection', (socket) => {
             delete connectedUsers[user.name];
             io.emit('user leave', user.name);
         } catch (error) {
-            logger.error(`errorno: ${error.errorno}; code: ${error.code}; syscall: ${error.syscall}; fatal: ${error.fatal}`);
+            logger.error(errorString(error));
         }
       }
     });
