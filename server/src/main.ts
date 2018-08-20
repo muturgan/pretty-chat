@@ -6,10 +6,11 @@ import socketIO from 'socket.io';
 import path = require('path');
 import http = require('http');
 import Controller from './controller';
-import { logger, errorString } from './logger';
+import Logger from './logger';
 import { messageType, userInfoType } from './types';
 
 const controller = new Controller;
+const logger = new Logger;
 
 const app = express()
     .use(express.static( path.join(__dirname, '../static') ))
@@ -49,7 +50,7 @@ io.on('connection', (socket) => {
             if (error.message === 'signInError') {
                 socket.emit('signInError');
             } else {
-                logger.error(errorString(error));
+                logger.error(error);
                 socket.emit('serverError');
             }
         }
@@ -68,7 +69,7 @@ io.on('connection', (socket) => {
             if (error.message === 'signUpError') {
                 socket.emit('signUpError');
             } else {
-                logger.error(errorString(error));
+                logger.error(error);
                 socket.emit('serverError');
             }
         }
@@ -80,7 +81,7 @@ io.on('connection', (socket) => {
             const result: Array<messageType> = await controller.initChat();
             socket.emit('initChatResponse', result);
       } catch (error) {
-            logger.error(errorString(error));
+            logger.error(error);
             socket.emit('serverError');
       }
     });
@@ -91,7 +92,7 @@ io.on('connection', (socket) => {
             const result: messageType = await controller.messageFromClient(message);
             io.emit('messageFromServer', result);
         } catch (error) {
-            logger.error(errorString(error));
+            logger.error(error);
             socket.emit('serverError');
         }
     });
@@ -105,7 +106,7 @@ io.on('connection', (socket) => {
             delete connectedUsers[user.name];
             io.emit('user leave', user.name);
         } catch (error) {
-            logger.error(errorString(error));
+            logger.error(error);
         }
       }
     });
