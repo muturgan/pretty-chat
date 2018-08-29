@@ -13,16 +13,16 @@ const controller = new Controller;
 const logger = new Logger;
 
 const app = express()
-    .use(express.static( path.join(__dirname, '../static') ))
+    .use(express.static( path.join(__dirname, '/static') ))
     .use(express.json())
     .use(express.urlencoded({ extended: true }))
-    .get('/', (req, res) => { res.sendFile( path.join(__dirname, '/../static/index.html') ); })
-    .get('/sign-in', (req, res) => { res.sendFile( path.join(__dirname, '/../static/index.html') ); })
-    .get('/sign-up', (req, res) => { res.sendFile( path.join(__dirname, '/../static/index.html') ); })
-    .get('/chat', (req, res) => { res.sendFile( path.join(__dirname, '/../static/index.html') ); })
+    .get('/', (req, res) => { res.sendFile( path.join(__dirname, '/static/index.html') ); })
+    .get('/sign-in', (req, res) => { res.sendFile( path.join(__dirname, '/static/index.html') ); })
+    .get('/sign-up', (req, res) => { res.sendFile( path.join(__dirname, '/static/index.html') ); })
+    .get('/chat', (req, res) => { res.sendFile( path.join(__dirname, '/static/index.html') ); })
     .get('/getLogs', (req, res) => {
         logger.info(`logs were sent to ${ req.url }`);
-        res.sendFile( path.join(__dirname, '/../combined.log') );
+        res.sendFile( path.join(__dirname, '/combined.log') );
     });
 
 const server = new http.Server(app);

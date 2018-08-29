@@ -1,7 +1,6 @@
 FROM node:alpine
-WORKDIR /app
 COPY package*.json ./
 RUN npm install --only=production
-COPY . .
+COPY dist/* ./
 EXPOSE 3333
-CMD [ "node", "server/server.js" ]
+CMD [ "node", "server.js" ]
