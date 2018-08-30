@@ -43,21 +43,9 @@
             "polyfills": "client/polyfills.ts",
             "tsConfig": "client/tsconfig.app.json",
             "assets": [
-              "client/favicons/apple-icon-57x57.png",
-              "client/favicons/apple-icon-60x60.png",
-              "client/favicons/apple-icon-72x72.png",
-              "client/favicons/apple-icon-76x76.png",
-              "client/favicons/apple-icon-114x114.png",
-              "client/favicons/apple-icon-120x120.png",
-              "client/favicons/apple-icon-144x144.png",
-              "client/favicons/apple-icon-152x152.png",
-              "client/favicons/apple-icon-180x180.png",
-              "client/favicons/android-icon-192x192.png",
-              "client/favicons/favicon-32x32.png",
-              "client/favicons/favicon-96x96.png",
-              "client/favicons/favicon-16x16.png",
-              "client/favicons/ms-icon-144x144.png",
-              "client/assets"
+              "client/favicon.ico",
+              "client/assets",
+              "client/manifest.json"
             ],
             "styles": [
               "node_modules/font-awesome/scss/font-awesome.scss",
@@ -86,7 +74,8 @@
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true
+              "buildOptimizer": true,
+              "serviceWorker": true
             }
           }
         },

@@ -14,6 +14,8 @@ import { SocketService } from './socket.service';
 import { CookieService } from './cookie.service';
 import { RouterService } from './router.service';
 import { DateService } from './chat/message/date.service';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { DateService } from './chat/message/date.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MDBBootstrapModule.forRoot()
+    MDBBootstrapModule.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [SocketService, CookieService, RouterService, DateService],
   bootstrap: [AppComponent],
