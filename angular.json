@@ -43,7 +43,7 @@
             "polyfills": "client/polyfills.ts",
             "tsConfig": "client/tsconfig.app.json",
             "assets": [
-              "client/favicon.ico",
+              "client/pretty-favicon.png",
               "client/assets"
             ],
             "styles": [
