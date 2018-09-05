@@ -3,10 +3,13 @@
   "version": "1.0.1",
   "description": "my test task for ITTest",
   "scripts": {
-    "build": "ng build --prod",
-    "devBack": "npx nodemon server/server.js",
+    "buildBack": "webpack",
+    "buildFront": "ng build --prod",
+    "devBack": "nodemon server/server.js",
     "devFront": "ng build --watch",
-    "start": "node server/server.js"
+    "ng": "ng",
+    "start": "node server/server.js",
+    "webpack": "webpack"
   },
   "repository": {
     "type": "git",

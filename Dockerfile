@@ -13,3 +13,5 @@ CMD [ "node", "server.js" ]
 # docker stop <id>
 # docker run -it <title> sh - посмотреть что внутри
 # exit
+# sudo docker container stop <id>
+# /var/lib/docker/containers
