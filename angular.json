@@ -53,10 +53,7 @@
               "node_modules/angular-bootstrap-md/scss/mdb-free.scss",
               "client/styles.scss"
             ],
-            "scripts": [
-              // "node_modules/chart.js/dist/Chart.js",
-              // "node_modules/hammerjs/hammer.min.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -99,5 +96,10 @@
       }
     }
   },
-  "defaultProject": "pretty-chat"
+  "defaultProject": "pretty-chat",
+  "cli": {
+    "warnings": {
+      "typescriptMismatch": false
+    }
+  }
 }
