@@ -55,3 +55,6 @@ SELECT * FROM table WHERE date >= DATE_SUB(curdate(), interval 1 week);
 
 За месяц:
 SELECT * FROM table WHERE date >= DATE_SUB(curdate(), interval 1 month);
+
+Количество записей:
+SELECT COUNT(*) FROM ${ table } WHERE ${ filters };
