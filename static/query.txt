@@ -43,3 +43,15 @@ TRUNCATE TABLE messages;
 
 сменить пароль пользователя:
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'новый-пароль';
+
+За сегодня:
+SELECT * FROM table WHERE date >= curdate();
+
+За вчера:
+SELECT * FROM table WHERE date >= (curdate()-1) AND date < curdate();
+
+За неделю:
+SELECT * FROM table WHERE date >= DATE_SUB(curdate(), interval 1 week);
+
+За месяц:
+SELECT * FROM table WHERE date >= DATE_SUB(curdate(), interval 1 month);
