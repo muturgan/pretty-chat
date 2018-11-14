@@ -58,3 +58,6 @@ SELECT * FROM table WHERE date >= DATE_SUB(curdate(), interval 1 month);
 
 Количество записей:
 SELECT COUNT(*) FROM ${ table } WHERE ${ filters };
+
+Список уникальных значений поля model в таблице vobileClients:
+select distinct model from mobileClients
