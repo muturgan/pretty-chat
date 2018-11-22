@@ -64,3 +64,6 @@ select distinct model from mobileClients
 
 В таблице test есть поле json в котором лежит массив, в конец которого я хочу добавить еще одно значение:
 UPDATE test SET json = JSON_ARRAY_APPEND(json, '$', 17) WHERE `id` = 2;
+
+Удалить элемент массива с индексом 2:
+UPDATE test SET json = JSON_REMOVE(json, '$[2]') WHERE `id` = 2;
