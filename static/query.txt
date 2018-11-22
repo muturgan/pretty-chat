@@ -61,3 +61,6 @@ SELECT COUNT(*) FROM ${ table } WHERE ${ filters };
 
 Список уникальных значений поля model в таблице vobileClients:
 select distinct model from mobileClients
+
+В таблице test есть поле json в котором лежит массив, в конец которого я хочу добавить еще одно значение:
+UPDATE test SET json = JSON_ARRAY_APPEND(json, '$', 17) WHERE `id` = 2;
