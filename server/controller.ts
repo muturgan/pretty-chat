@@ -1,7 +1,14 @@
 import sqlRequest from './db';
 import { messageType, userInfoType } from './types';
-import base64 = require('js-base64');
-const Base64 = base64.Base64;
+
+const Base64: {
+  readonly decode: (str: string) => string,
+  readonly encode: (str: string|number) => string,
+
+} = {
+  decode: (str) => Buffer.from(str, 'base64').toString('utf8'),
+  encode: (str) => Buffer.from(str.toString()).toString('base64'),
+};
 
 class Controller {
 
@@ -65,7 +72,7 @@ class Controller {
     try {
       const rows: Array<messageType> =
         await sqlRequest(`SELECT *, NULL AS password FROM users, messages WHERE messages.author_id = users.id AND messages.room="public";`);
-      for (let row of rows) {
+      for (const row of rows) {
         row.name = Base64.decode(row.name);
         row.text = Base64.decode(row.text);
       }
