@@ -23,7 +23,7 @@ ALTER TABLE users CHANGE status status VARCHAR(15) NOT NULL DEFAULT 'offline'
 
 изменить значение поля text в строке с id=1 в таблице `news`
 UPDATE `news` SET `text` = 'The very first news' WHERE `id` = 1;
-UPDATE users SET status = 'online' WHERE name="${ data.name }";
+UPDATE users SET status = 'online', name = 'Jhon' WHERE name="${ data.name }";
 
 создание таблицы:
 CREATE TABLE `messages`
