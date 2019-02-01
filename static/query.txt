@@ -76,7 +76,10 @@ ON DELETE SET NULL;
 
 Удалить вторичный ключ
 ALTER TABLE Orders
-DROP FOREIGN KEY FK_PersonOrder;
+DROP FOREIGN KEY FK_PersonOrder; (обрати внимание
+это не название поля, это имя ключа.
+его пожно посмотреть командой
+show create table Orders)
 
 показать статус
 SHOW ENGINE INNODB STATUS;
